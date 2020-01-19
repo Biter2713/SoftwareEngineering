@@ -9,31 +9,30 @@
 
 using namespace std;
 
-int prmt[10] = { 1,2,3,4,6,7,8,9 }; //µÚÒ»ĞĞÈ«ÅÅÁĞÊıÖµ£¨ÒòÎªµÚÒ»¸öÊı×ÖÎª(1 + 3)% 9 + 1 = 5£¬È«ÅÅÁĞ²»¿¼ÂÇ5£©
+int prmt[10] = { 1,2,3,4,6,7,8,9 }; //ç¬¬ä¸€è¡Œå…¨æ’åˆ—æ•°å€¼ï¼ˆå› ä¸ºç¬¬ä¸€ä¸ªæ•°å­—ä¸º(1 + 3)% 9 + 1 = 5ï¼Œå…¨æ’åˆ—ä¸è€ƒè™‘5ï¼‰
 int flag = 0;
 char result[200000000];
 int sudoku[10][9][9]; 
-//±ä»»·½Ê½
-int move_0[3][3] = { {0, 3, 6} };//1~3ĞĞÆ½ÒÆµ¥Î»
-int move_1[6][3] = { {1, 4, 7}, {1, 7, 4}, {4, 1, 7}, {4, 7, 1}, {7, 1, 4}, {7, 4, 1} };//4~6ĞĞµÄÆ½ÒÆµ¥Î»
-int move_2[6][3] = { {2, 5, 8}, {2, 8, 5}, {5, 2, 8}, {5, 8, 2}, {8, 2, 5}, {8, 5, 2} };//7~9ĞĞµÄÆ½ÒÆµ¥Î»
+//å˜æ¢æ–¹å¼
+int move_0[3][3] = { {0, 3, 6} };//1~3è¡Œå¹³ç§»å•ä½
+int move_1[6][3] = { {1, 4, 7}, {1, 7, 4}, {4, 1, 7}, {4, 7, 1}, {7, 1, 4}, {7, 4, 1} };//4~6è¡Œçš„å¹³ç§»å•ä½
+int move_2[6][3] = { {2, 5, 8}, {2, 8, 5}, {5, 2, 8}, {5, 8, 2}, {8, 2, 5}, {8, 5, 2} };//7~9è¡Œçš„å¹³ç§»å•ä½
 
-
-void permutation(int *move) //±ä»»£»
+//ç”Ÿæˆç»ˆå±€
+void permutation(int *move) //å˜æ¢ï¼›
 {
 	for (int i = 0; i < 3; ++i)
 	{ 
 		result[flag++] = prmt[(move[i] + 8) % 9] + '0';
 		for (int j = 1; j < 17; ++j)
 		{
-			result[flag++] = ' ';  //´æ¿Õ¸ñ
+			result[flag++] = ' ';  //å­˜ç©ºæ ¼
 			j++;
 			result[flag++] = prmt[(move[i] + (16 - j) / 2) % 9] + '0';
 		}
-		result[flag++] = '\n';  //´æ»»ĞĞ·û
+		result[flag++] = '\n';  //å­˜æ¢è¡Œç¬¦
 	}
 }
-//Éú³ÉÖÕ¾Ö
 void changeSusoku(int *move_0, int *move_1, int *move_2) 
 {
 	permutation(move_0); //036
@@ -41,62 +40,58 @@ void changeSusoku(int *move_0, int *move_1, int *move_2)
 	permutation(move_2); //258
 	result[flag++] = '\n';
 }
-void makeN(int N) //µÃµ½N¸öÊı¶À
+void makeN(int N) //å¾—åˆ°Nä¸ªæ•°ç‹¬
 {
 
 	int makeNum = 0;
 	do
 	{
-		prmt[8] = 5;  //Ñ§ºÅºÅÂë²åÈëÅÅÁĞÎ²²¿
-		for (int i = 0; i < 2; ++i) //1~3ĞĞ±ä»»£º036 063 Á½ÖÖ
+		prmt[8] = 5;  //å­¦å·å·ç æ’å…¥æ’åˆ—å°¾éƒ¨
+		for (int i = 0; i < 2; ++i) //1~3è¡Œå˜æ¢ï¼š036 063 ä¸¤ç§
 		{
-			for (int j = 0; j < 6; ++j) //4~6ĞĞ±ä»»£º258 ... 852 ÁùÖÖ
+			for (int j = 0; j < 6; ++j) //4~6è¡Œå˜æ¢ï¼š258 ... 852 å…­ç§
 			{
-				for (int m = 0; m < 6; ++m) //7~9ĞĞ±ä»»£º147 ... 741 ÁùÖÖ
+				for (int m = 0; m < 6; ++m) //7~9è¡Œå˜æ¢ï¼š147 ... 741 å…­ç§
 				{
-					changeSusoku(move_0[i], move_1[j], move_2[m]); //¸ù¾İ²»Í¬·½Ê½±ä»¯ÖÕ¾Ö
-					if (++makeNum == N)  //Ö±µ½ÊıÁ¿´ïµ½N
+					changeSusoku(move_0[i], move_1[j], move_2[m]); //æ ¹æ®ä¸åŒæ–¹å¼å˜åŒ–ç»ˆå±€
+					if (++makeNum == N)  //ç›´åˆ°æ•°é‡è¾¾åˆ°N
 						return;
 				}
 			}
 		}
-	} while (prev_permutation(prmt, prmt + 8));  //prev_permutationº¯ÊıÔÙµÃÒ»¸öÈ«ÅÅÁĞ
+	} while (prev_permutation(prmt, prmt + 8));  //prev_permutationå‡½æ•°å†å¾—ä¸€ä¸ªå…¨æ’åˆ—
 }
 
 
-//Çó½âÊı¶À
-int ifok(int s, int x, int y, int r) //ÅĞ¶ÏÌî³äºÏ·¨
-{
-	for (int i = 0; i < 9; i++)
-	{    //ĞĞ¡¢ÁĞÅĞ¶Ï
-		if (sudoku[s][x][i] == r || sudoku[s][i][y] == r)
-			return 0;
-	}    //¹¬ÅĞ¶Ï
-	int gong_x = x - x % 3, gong_y = y - y % 3;    //¹¬×óÉÏ½Ç×ø±ê
-	for (int i = gong_x; i < gong_x + 3; i++)    
-		for (int j = gong_y; j < gong_y + 3; j++)
-			if (sudoku[s][i][j] == r)
-				return 0;
-	return 1;
-}
-
+//æ±‚è§£æ•°ç‹¬
 int solve(int s, int a, int b)
 {   
 	int t = sudoku[s][a][b];
 	if (a == 9)   return 1;
-	if (sudoku[s][a][b] != 0)  //¸ÃÎ»ÖÃ·Ç¿Õ¸ñ
+	if (sudoku[s][a][b] != 0)  //è¯¥ä½ç½®éç©ºæ ¼
 	{
 		if (solve(s, a + (b + 1) / 9, (b + 1) % 9))   return 1;
 	}
-	else  //µÈÓÚ0£¬¸ÃÎ»ÖÃÎª¿Õ¸ñ
+	else  //ç­‰äº0ï¼Œè¯¥ä½ç½®ä¸ºç©ºæ ¼
 	{
 		for (int i = 0; i < 9; ++i)
 		{
 			int tempt[9] = { 1,2,3,4,5,6,7,8,9 };
 			int r = tempt[i];
-			if (ifok(s, a, b, r))  //ÅĞ¶ÏrÈôÌî³äºÏ·¨
+			int tag = 0;
+			for (int i = 0; i < 9; i++)
+			{    //è¡Œã€åˆ—åˆ¤æ–­
+				if (sudoku[s][a][i] == r || sudoku[s][i][b] == r)
+					tag++;
+			}    //å®«åˆ¤æ–­
+			int gong_x = a - a % 3, gong_y = b - b % 3;    //å®«å·¦ä¸Šè§’åæ ‡
+			for (int i = gong_x; i < gong_x + 3; i++)
+				for (int j = gong_y; j < gong_y + 3; j++)
+					if (sudoku[s][i][j] == r)
+						tag++;
+			if (tag == 0)  //åˆ¤æ–­rè‹¥å¡«å……åˆæ³•
 			{
-				sudoku[s][a][b] = r;  //¸ÃÎ»ÖÃÌîÎªr
+				sudoku[s][a][b] = r;  //è¯¥ä½ç½®å¡«ä¸ºr
 				if (solve(s, a + (b + 1) / 9, (b + 1) % 9))   return 1;
 			}
 		}
@@ -108,36 +103,36 @@ int solve(int s, int a, int b)
 
 int main(int argc, char const *argv[])
 {
-	//Éú³ÉÖÕ¾Ö
+	//ç”Ÿæˆç»ˆå±€
 	if(argc != 3) printf("Error!\n");
 	else 
 	{
-		int N = 0; //´æÊäÈë¸öÊıargv[2]µÄÊıÖµĞÍ
-		if (argv[1][0] == '-' && argv[1][1] == 'c')  //ÃüÁîĞĞ×Ö·û´®Îª¡°-c¡±
-	    {   //ÅĞ¶ÏºÏ·¨ÊäÈë
+		int N = 0; //å­˜è¾“å…¥ä¸ªæ•°argv[2]çš„æ•°å€¼å‹
+		if (argv[1][0] == '-' && argv[1][1] == 'c')  //å‘½ä»¤è¡Œå­—ç¬¦ä¸²ä¸ºâ€œ-câ€
+	    {   //åˆ¤æ–­åˆæ³•è¾“å…¥
 			for (int i = 0; i < strlen(argv[2]); ++i)
 		    {
-				if (argv[2][i] >= '0' && argv[2][i] <= '9')  N = N * 10 + argv[2][i] - '0';   //×ªÎªÊıÖµ
+				if (argv[2][i] >= '0' && argv[2][i] <= '9')  N = N * 10 + argv[2][i] - '0';   //è½¬ä¸ºæ•°å€¼
 			    else
 			    {
 				   printf("Error!\n");
 				     return 0;
 			    }
 		    }
-		makeN(N); //µÃµ½ËùĞèN¸öÊı¶ÀÖÕ¾Ö
-		//Êä³öÖÕ¾Ö
-		ofstream FinalFile("sudoku.txt"); //ofstream file3("c:\\x.123"); ÒÔÊä³ö·½Ê½´ò¿ªÎÄ¼ş
+		makeN(N); //å¾—åˆ°æ‰€éœ€Nä¸ªæ•°ç‹¬ç»ˆå±€
+		//è¾“å‡ºç»ˆå±€
+		ofstream FinalFile("sudoku.txt"); //ofstream file3("c:\\x.123"); ä»¥è¾“å‡ºæ–¹å¼æ‰“å¼€æ–‡ä»¶
 		FinalFile << result;
-		printf("³É¹¦Éú³ÉÖÕ¾ÖÎÄ¼şsudoku.txt!\n");
+		printf("æˆåŠŸç”Ÿæˆç»ˆå±€æ–‡ä»¶sudoku.txt!\n");
 	    }
 
-	//Çó½âÊı¶À
-	    else if (argv[1][0] == '-' && argv[1][1] == 's')  //ÃüÁîĞĞ×Ö·û´®Îª¡°-s¡±
+	//æ±‚è§£æ•°ç‹¬
+	    else if (argv[1][0] == '-' && argv[1][1] == 's')  //å‘½ä»¤è¡Œå­—ç¬¦ä¸²ä¸ºâ€œ-sâ€
 	    {
 		    int i = 0, j = 0;
 			FILE *fp1;  
-				fp1 = fopen(argv[2], "r");   //ÌâÄ¿ÎÄ¼ş
-			freopen("sudoku.txt", "w", stdout);  //½á¹ûÎÄ¼ş
+				fp1 = fopen(argv[2], "r");   //é¢˜ç›®æ–‡ä»¶
+			freopen("sudoku.txt", "w", stdout);  //ç»“æœæ–‡ä»¶
 			while (~fscanf(fp1,"%d", &sudoku[0][i][j]))
 			{
 				i += (j + 1) / 9;
@@ -161,8 +156,8 @@ int main(int argc, char const *argv[])
 					putchar('\n');
 				}
 			}
-			fclose(fp1);   //¹Ø±ÕÌâÄ¿ÎÄ¼ş
-			fclose(stdout);  //¹Ø±Õ½á¹ûÎÄ¼ş
+			fclose(fp1);   //å…³é—­é¢˜ç›®æ–‡ä»¶
+			fclose(stdout);  //å…³é—­ç»“æœæ–‡ä»¶
 			return 0;
 	}
  }
